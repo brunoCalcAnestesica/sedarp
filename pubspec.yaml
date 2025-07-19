@@ -1,5 +1,5 @@
 name: sedarp
-description: "A new Flutter project."
+description: "SEDARP - Serviço de Sedação Ambulatorial em Regime de Pequena Cirurgia"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -31,9 +31,65 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # UI e Icons
   cupertino_icons: ^1.0.8
+  
+  # Firebase
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  firebase_storage: ^11.5.6
+  
+  # Gerenciamento de Estado
+  provider: ^6.1.2
+  riverpod: ^2.6.1
+  flutter_riverpod: ^2.6.1
+  
+  # Navegação
+  go_router: ^14.6.2
+  
+  # Formulários e Validação
+  # form_builder_validators: ^9.1.0
+  # flutter_form_builder: ^9.3.1
+  
+  # Data e Hora
+  # intl: ^0.18.1 # Gerenciado pelo Flutter SDK
+  
+  # PDF e Documentos
+  pdf: ^3.10.8
+  path_provider: ^2.1.4
+  share_plus: ^7.2.1
+  
+  # Localização e Mapas
+  geolocator: ^12.0.0
+  google_maps_flutter: ^2.8.0
+  
+  # Notificações
+  flutter_local_notifications: ^16.3.2
+  
+  # Armazenamento Local
+  shared_preferences: ^2.3.2
+  
+  # Utilitários
+  uuid: ^4.5.1
+  image_picker: ^1.1.2
+  file_picker: ^7.0.0
+  
+  # Criptografia e Segurança
+  crypto: ^3.0.3
+  
+  # HTTP e APIs
+  http: ^1.2.2
+  dio: ^5.7.0
+  
+  # QR Code e Barcode
+  qr_flutter: ^4.1.0
+  
+  # Gráficos e Relatórios
+  fl_chart: ^0.69.0
+  
+  # Tabelas
+  data_table_2: ^2.5.10
 
 dev_dependencies:
   flutter_test:
@@ -58,9 +114,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/documents/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -73,7 +130,14 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Roboto-Light.ttf
+          weight: 300
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
