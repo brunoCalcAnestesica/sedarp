@@ -20,11 +20,11 @@ class SedarpApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       home: const WelcomeScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -48,102 +48,94 @@ class WelcomeScreen extends StatelessWidget {
         ),
         child: SafeArea(
           child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppConstants.paddingLarge),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Logo ou ícone
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(60),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.medical_services,
-                      size: 60,
-                      color: AppConstants.primaryColor,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: AppConstants.paddingLarge),
-                  
-                  // Título
-                  Text(
-                    AppConstants.appName,
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  
-                  const SizedBox(height: AppConstants.paddingMedium),
-                  
-                  // Descrição
-                  Text(
-                    AppConstants.appDescription,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: AppConstants.paddingXLarge),
-                  
-                  // Botão de login
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // TODO: Navegar para tela de login
-                        _showLoginDialog(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppConstants.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppConstants.paddingLarge,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppConstants.radiusLarge),
-                        ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo/Ícone
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(60),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
-                      child: const Text(
-                        'Entrar no SEDARP',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                  
-                  const SizedBox(height: AppConstants.paddingMedium),
-                  
-                  // Link para mais informações
-                  TextButton(
-                    onPressed: () {
-                      // TODO: Abrir informações sobre o SEDARP
-                    },
-                    child: Text(
-                      'Saiba mais sobre o SEDARP',
+                  child: const Icon(
+                    Icons.medical_services,
+                    size: 60,
+                    color: AppConstants.primaryColor,
+                  ),
+                ),
+                
+                const SizedBox(height: AppConstants.paddingXLarge),
+                
+                // Título
+                const Text(
+                  'SEDARP',
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 2,
+                  ),
+                ),
+                
+                const SizedBox(height: AppConstants.paddingSmall),
+                
+                // Subtítulo
+                const Text(
+                  'Serviço de Sedação Ambulatorial\nem Regime de Pequena Cirurgia',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white70,
+                    height: 1.5,
+                  ),
+                ),
+                
+                const SizedBox(height: AppConstants.paddingXLarge),
+                
+                // Botão de entrada
+                SizedBox(
+                  width: 280,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => _showProfileSelector(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppConstants.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppConstants.radiusLarge),
+                      ),
+                      elevation: 8,
+                    ),
+                    child: const Text(
+                      'Entrar no SEDARP',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        decoration: TextDecoration.underline,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                
+                const SizedBox(height: AppConstants.paddingXLarge),
+                
+                // Versão
+                const Text(
+                  'Versão 1.0.0',
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -151,39 +143,102 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  void _showLoginDialog(BuildContext context) {
+  void _showProfileSelector(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Selecionar Perfil'),
-          content: const Text('Escolha seu perfil para continuar:'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _navigateToLogin(context, 'clinic');
-              },
-              child: const Text('Clínica'),
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Selecione seu Perfil',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppConstants.primaryColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildProfileOption(
+              context,
+              'Clínica',
+              Icons.local_hospital,
+              AppConstants.primaryColor,
+              'clinic',
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _navigateToLogin(context, 'anesthesiologist');
-              },
-              child: const Text('Anestesiologista'),
+            const SizedBox(height: AppConstants.paddingMedium),
+            _buildProfileOption(
+              context,
+              'Anestesiologista',
+              Icons.medical_services,
+              AppConstants.accentColor,
+              'anesthesiologist',
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _navigateToLogin(context, 'administrator');
-              },
-              child: const Text('Administrador/RT'),
+            const SizedBox(height: AppConstants.paddingMedium),
+            _buildProfileOption(
+              context,
+              'Administrador/RT',
+              Icons.admin_panel_settings,
+              AppConstants.secondaryColor,
+              'administrator',
             ),
           ],
-        );
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileOption(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    String profile,
+  ) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        _navigateToLogin(context, profile);
       },
+      borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+      child: Container(
+        padding: const EdgeInsets.all(AppConstants.paddingMedium),
+        decoration: BoxDecoration(
+          border: Border.all(color: color.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(AppConstants.radiusMedium),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Icon(
+                icon,
+                color: color,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: AppConstants.paddingMedium),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: color,
+              size: 16,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -210,4 +265,4 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
-}
+} 

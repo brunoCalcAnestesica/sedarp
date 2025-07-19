@@ -1,9 +1,80 @@
 enum ClinicStatus {
-  active,
-  inactive,
+  all,
+  approved,
   pending,
   suspended,
+  rejected,
+}
+
+enum DocumentType {
+  healthLicense,
+  anvisaRegistration,
+  socialContract,
+  operatingLicense,
+  croAnnexes,
+  sanitarySurveillanceAnnexes,
+  equipmentList,
+  backupHospital,
+  responsibilityTerm,
+}
+
+enum DocumentStatus {
+  pending,
+  approved,
+  rejected,
   expired,
+}
+
+class ClinicDocument {
+  final String id;
+  final String name;
+  final DocumentType type;
+  final DocumentStatus status;
+  final DateTime uploadDate;
+  final DateTime expiryDate;
+  final String? fileUrl;
+  final String? notes;
+
+  ClinicDocument({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.status,
+    required this.uploadDate,
+    required this.expiryDate,
+    this.fileUrl,
+    this.notes,
+  });
+
+  factory ClinicDocument.fromJson(Map<String, dynamic> json) {
+    return ClinicDocument(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      type: DocumentType.values.firstWhere(
+        (e) => e.toString() == 'DocumentType.${json['type']}',
+      ),
+      status: DocumentStatus.values.firstWhere(
+        (e) => e.toString() == 'DocumentStatus.${json['status']}',
+      ),
+      uploadDate: DateTime.parse(json['uploadDate'] as String),
+      expiryDate: DateTime.parse(json['expiryDate'] as String),
+      fileUrl: json['fileUrl'] as String?,
+      notes: json['notes'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'uploadDate': uploadDate.toIso8601String(),
+      'expiryDate': expiryDate.toIso8601String(),
+      'fileUrl': fileUrl,
+      'notes': notes,
+    };
+  }
 }
 
 class ClinicModel {
@@ -12,6 +83,10 @@ class ClinicModel {
   final String cnpj;
   final String cnae;
   final String address;
+  final String city;
+  final String state;
+  final String phone;
+  final String email;
   final double latitude;
   final double longitude;
   final String responsibleName;
@@ -21,16 +96,10 @@ class ClinicModel {
   final ClinicStatus status;
   final DateTime createdAt;
   final DateTime? lastUpdated;
+  final DateTime? updatedAt;
   
-  // Documentação
-  final String? socialContractUrl;
-  final String? sanitaryLicenseUrl;
-  final String? operatingLicenseUrl;
-  final String? croAnnexesUrl;
-  final String? sanitarySurveillanceAnnexesUrl;
-  final String? equipmentListUrl;
-  final String? backupHospitalUrl;
-  final String? responsibilityTermUrl;
+  // Documentos
+  final List<ClinicDocument> documents;
   
   // Procedimentos autorizados
   final List<String> authorizedProcedures;
@@ -53,6 +122,10 @@ class ClinicModel {
     required this.cnpj,
     required this.cnae,
     required this.address,
+    required this.city,
+    required this.state,
+    required this.phone,
+    required this.email,
     required this.latitude,
     required this.longitude,
     required this.responsibleName,
@@ -62,14 +135,8 @@ class ClinicModel {
     required this.status,
     required this.createdAt,
     this.lastUpdated,
-    this.socialContractUrl,
-    this.sanitaryLicenseUrl,
-    this.operatingLicenseUrl,
-    this.croAnnexesUrl,
-    this.sanitarySurveillanceAnnexesUrl,
-    this.equipmentListUrl,
-    this.backupHospitalUrl,
-    this.responsibilityTermUrl,
+    this.updatedAt,
+    this.documents = const [],
     this.authorizedProcedures = const [],
     this.equipment = const [],
     this.backupHospitalName,
@@ -86,6 +153,10 @@ class ClinicModel {
       cnpj: json['cnpj'] as String,
       cnae: json['cnae'] as String,
       address: json['address'] as String,
+      city: json['city'] as String,
+      state: json['state'] as String,
+      phone: json['phone'] as String,
+      email: json['email'] as String,
       latitude: json['latitude'] as double,
       longitude: json['longitude'] as double,
       responsibleName: json['responsibleName'] as String,
@@ -99,14 +170,12 @@ class ClinicModel {
       lastUpdated: json['lastUpdated'] != null 
           ? DateTime.parse(json['lastUpdated'] as String) 
           : null,
-      socialContractUrl: json['socialContractUrl'] as String?,
-      sanitaryLicenseUrl: json['sanitaryLicenseUrl'] as String?,
-      operatingLicenseUrl: json['operatingLicenseUrl'] as String?,
-      croAnnexesUrl: json['croAnnexesUrl'] as String?,
-      sanitarySurveillanceAnnexesUrl: json['sanitarySurveillanceAnnexesUrl'] as String?,
-      equipmentListUrl: json['equipmentListUrl'] as String?,
-      backupHospitalUrl: json['backupHospitalUrl'] as String?,
-      responsibilityTermUrl: json['responsibilityTermUrl'] as String?,
+      updatedAt: json['updatedAt'] != null 
+          ? DateTime.parse(json['updatedAt'] as String) 
+          : null,
+      documents: json['documents'] != null 
+          ? (json['documents'] as List).map((doc) => ClinicDocument.fromJson(doc)).toList()
+          : [],
       authorizedProcedures: json['authorizedProcedures'] != null 
           ? List<String>.from(json['authorizedProcedures'] as List) 
           : [],
@@ -130,6 +199,10 @@ class ClinicModel {
       'cnpj': cnpj,
       'cnae': cnae,
       'address': address,
+      'city': city,
+      'state': state,
+      'phone': phone,
+      'email': email,
       'latitude': latitude,
       'longitude': longitude,
       'responsibleName': responsibleName,
@@ -139,14 +212,8 @@ class ClinicModel {
       'status': status.toString().split('.').last,
       'createdAt': createdAt.toIso8601String(),
       'lastUpdated': lastUpdated?.toIso8601String(),
-      'socialContractUrl': socialContractUrl,
-      'sanitaryLicenseUrl': sanitaryLicenseUrl,
-      'operatingLicenseUrl': operatingLicenseUrl,
-      'croAnnexesUrl': croAnnexesUrl,
-      'sanitarySurveillanceAnnexesUrl': sanitarySurveillanceAnnexesUrl,
-      'equipmentListUrl': equipmentListUrl,
-      'backupHospitalUrl': backupHospitalUrl,
-      'responsibilityTermUrl': responsibilityTermUrl,
+      'updatedAt': updatedAt?.toIso8601String(),
+      'documents': documents.map((doc) => doc.toJson()).toList(),
       'authorizedProcedures': authorizedProcedures,
       'equipment': equipment,
       'backupHospitalName': backupHospitalName,
@@ -163,6 +230,10 @@ class ClinicModel {
     String? cnpj,
     String? cnae,
     String? address,
+    String? city,
+    String? state,
+    String? phone,
+    String? email,
     double? latitude,
     double? longitude,
     String? responsibleName,
@@ -172,14 +243,8 @@ class ClinicModel {
     ClinicStatus? status,
     DateTime? createdAt,
     DateTime? lastUpdated,
-    String? socialContractUrl,
-    String? sanitaryLicenseUrl,
-    String? operatingLicenseUrl,
-    String? croAnnexesUrl,
-    String? sanitarySurveillanceAnnexesUrl,
-    String? equipmentListUrl,
-    String? backupHospitalUrl,
-    String? responsibilityTermUrl,
+    DateTime? updatedAt,
+    List<ClinicDocument>? documents,
     List<String>? authorizedProcedures,
     List<String>? equipment,
     String? backupHospitalName,
@@ -194,6 +259,10 @@ class ClinicModel {
       cnpj: cnpj ?? this.cnpj,
       cnae: cnae ?? this.cnae,
       address: address ?? this.address,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       responsibleName: responsibleName ?? this.responsibleName,
@@ -203,14 +272,8 @@ class ClinicModel {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       lastUpdated: lastUpdated ?? this.lastUpdated,
-      socialContractUrl: socialContractUrl ?? this.socialContractUrl,
-      sanitaryLicenseUrl: sanitaryLicenseUrl ?? this.sanitaryLicenseUrl,
-      operatingLicenseUrl: operatingLicenseUrl ?? this.operatingLicenseUrl,
-      croAnnexesUrl: croAnnexesUrl ?? this.croAnnexesUrl,
-      sanitarySurveillanceAnnexesUrl: sanitarySurveillanceAnnexesUrl ?? this.sanitarySurveillanceAnnexesUrl,
-      equipmentListUrl: equipmentListUrl ?? this.equipmentListUrl,
-      backupHospitalUrl: backupHospitalUrl ?? this.backupHospitalUrl,
-      responsibilityTermUrl: responsibilityTermUrl ?? this.responsibilityTermUrl,
+      updatedAt: updatedAt ?? this.updatedAt,
+      documents: documents ?? this.documents,
       authorizedProcedures: authorizedProcedures ?? this.authorizedProcedures,
       equipment: equipment ?? this.equipment,
       backupHospitalName: backupHospitalName ?? this.backupHospitalName,

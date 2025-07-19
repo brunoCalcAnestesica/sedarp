@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../shared/models/user_model.dart';
+import '../../clinics/screens/clinic_management_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final UserRole userRole;
@@ -592,7 +593,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           {
             'icon': Icons.local_hospital,
             'label': 'Gerenciar Clínicas',
-            'onTap': () => _showMessage('Gerenciar clínicas'),
+            'onTap': () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ClinicManagementScreen(),
+                ),
+              );
+            },
           },
           {
             'icon': Icons.medical_services,
