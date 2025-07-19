@@ -1,4 +1,17 @@
-enum AsaClass {
+enum Gender {
+  male,
+  female,
+  other,
+}
+
+enum PatientStatus {
+  all,
+  active,
+  inactive,
+  pending,
+}
+
+enum ASAClassification {
   asa1,
   asa2,
   asa3,
@@ -7,104 +20,109 @@ enum AsaClass {
   asa6,
 }
 
-enum MallampatiClass {
-  class1,
-  class2,
-  class3,
-  class4,
+enum RiskLevel {
+  low,
+  medium,
+  high,
+  critical,
+}
+
+enum EvaluationStatus {
+  completed,
+  pending,
+  inProgress,
+  expired,
 }
 
 class PatientModel {
   final String id;
   final String name;
   final String cpf;
+  final String rg;
   final DateTime birthDate;
-  final String gender;
-  final double weight; // kg
-  final double height; // cm
-  final String? phone;
-  final String? email;
-  final String? address;
-  final String? emergencyContact;
-  final String? emergencyPhone;
-  
-  // Anamnese
-  final List<String> diseases;
-  final List<String> allergies;
-  final List<String> medications;
-  final bool hasApnea;
-  final String? apneaDetails;
-  final bool isSmoker;
-  final bool isAlcoholic;
-  final String? previousSurgeries;
-  final String? familyHistory;
-  
-  // Exame físico
-  final double? bmi;
-  final int? heartRate;
-  final String? bloodPressure;
-  final int? oxygenSaturation;
-  final MallampatiClass? mallampati;
-  final String? airwayAssessment;
-  final String? physicalExamNotes;
-  
-  // ASA e avaliação
-  final AsaClass? asaClass;
-  final String? asaNotes;
-  final String? labResultsUrl;
-  final String? additionalExamsUrl;
-  
-  // Parecer final
-  final String? finalOpinion; // liberado, com ressalvas, contraindicado
-  final String? restrictions;
-  final String? recommendations;
-  
-  // Metadados
+  final Gender gender;
+  final String phone;
+  final String email;
+  final String address;
+  final String city;
+  final String state;
+  final String emergencyContact;
+  final String emergencyPhone;
+  final String emergencyRelationship;
+  final PatientStatus status;
+  final ASAClassification asaClassification;
+  final RiskLevel riskLevel;
+  final EvaluationStatus evaluationStatus;
+  final DateTime? evaluationDate;
+  final DateTime nextEvaluationDate;
   final DateTime createdAt;
-  final DateTime? lastUpdated;
-  final String createdBy;
-  final String? clinicId;
+  final DateTime? updatedAt;
+  
+  // Dados da avaliação pré-anestésica
+  final String? weight;
+  final String? height;
+  final String? bmi;
+  final String? bloodType;
+  final String? allergies;
+  final String? currentMedications;
+  final String? medicalHistory;
+  final String? surgicalHistory;
+  final String? familyHistory;
+  final String? socialHistory;
+  final String? physicalExam;
+  final String? labResults;
+  final String? ecgResults;
+  final String? chestXrayResults;
+  final String? additionalExams;
+  final String? anesthesiologistNotes;
+  final String? recommendations;
+  final bool? fastingStatus;
+  final DateTime? lastMealTime;
+  final String? specialInstructions;
 
   PatientModel({
     required this.id,
     required this.name,
     required this.cpf,
+    required this.rg,
     required this.birthDate,
     required this.gender,
-    required this.weight,
-    required this.height,
-    this.phone,
-    this.email,
-    this.address,
-    this.emergencyContact,
-    this.emergencyPhone,
-    this.diseases = const [],
-    this.allergies = const [],
-    this.medications = const [],
-    this.hasApnea = false,
-    this.apneaDetails,
-    this.isSmoker = false,
-    this.isAlcoholic = false,
-    this.previousSurgeries,
-    this.familyHistory,
-    this.bmi,
-    this.heartRate,
-    this.bloodPressure,
-    this.oxygenSaturation,
-    this.mallampati,
-    this.airwayAssessment,
-    this.physicalExamNotes,
-    this.asaClass,
-    this.asaNotes,
-    this.labResultsUrl,
-    this.additionalExamsUrl,
-    this.finalOpinion,
-    this.restrictions,
-    this.recommendations,
+    required this.phone,
+    required this.email,
+    required this.address,
+    required this.city,
+    required this.state,
+    required this.emergencyContact,
+    required this.emergencyPhone,
+    required this.emergencyRelationship,
+    required this.status,
+    required this.asaClassification,
+    required this.riskLevel,
+    required this.evaluationStatus,
+    this.evaluationDate,
+    required this.nextEvaluationDate,
     required this.createdAt,
-    this.lastUpdated,
-    required this.createdBy,
-    this.clinicId,
+    this.updatedAt,
+    this.weight,
+    this.height,
+    this.bmi,
+    this.bloodType,
+    this.allergies,
+    this.currentMedications,
+    this.medicalHistory,
+    this.surgicalHistory,
+    this.familyHistory,
+    this.socialHistory,
+    this.physicalExam,
+    this.labResults,
+    this.ecgResults,
+    this.chestXrayResults,
+    this.additionalExams,
+    this.anesthesiologistNotes,
+    this.recommendations,
+    this.fastingStatus,
+    this.lastMealTime,
+    this.specialInstructions,
   });
 
   factory PatientModel.fromJson(Map<String, dynamic> json) {
@@ -112,58 +130,61 @@ class PatientModel {
       id: json['id'] as String,
       name: json['name'] as String,
       cpf: json['cpf'] as String,
+      rg: json['rg'] as String,
       birthDate: DateTime.parse(json['birthDate'] as String),
-      gender: json['gender'] as String,
-      weight: json['weight'] as double,
-      height: json['height'] as double,
-      phone: json['phone'] as String?,
-      email: json['email'] as String?,
-      address: json['address'] as String?,
-      emergencyContact: json['emergencyContact'] as String?,
-      emergencyPhone: json['emergencyPhone'] as String?,
-      diseases: json['diseases'] != null 
-          ? List<String>.from(json['diseases'] as List) 
-          : [],
-      allergies: json['allergies'] != null 
-          ? List<String>.from(json['allergies'] as List) 
-          : [],
-      medications: json['medications'] != null 
-          ? List<String>.from(json['medications'] as List) 
-          : [],
-      hasApnea: json['hasApnea'] as bool? ?? false,
-      apneaDetails: json['apneaDetails'] as String?,
-      isSmoker: json['isSmoker'] as bool? ?? false,
-      isAlcoholic: json['isAlcoholic'] as bool? ?? false,
-      previousSurgeries: json['previousSurgeries'] as String?,
-      familyHistory: json['familyHistory'] as String?,
-      bmi: json['bmi'] as double?,
-      heartRate: json['heartRate'] as int?,
-      bloodPressure: json['bloodPressure'] as String?,
-      oxygenSaturation: json['oxygenSaturation'] as int?,
-      mallampati: json['mallampati'] != null 
-          ? MallampatiClass.values.firstWhere(
-              (e) => e.toString() == 'MallampatiClass.${json['mallampati']}',
-            )
+      gender: Gender.values.firstWhere(
+        (e) => e.toString() == 'Gender.${json['gender']}',
+      ),
+      phone: json['phone'] as String,
+      email: json['email'] as String,
+      address: json['address'] as String,
+      city: json['city'] as String,
+      state: json['state'] as String,
+      emergencyContact: json['emergencyContact'] as String,
+      emergencyPhone: json['emergencyPhone'] as String,
+      emergencyRelationship: json['emergencyRelationship'] as String,
+      status: PatientStatus.values.firstWhere(
+        (e) => e.toString() == 'PatientStatus.${json['status']}',
+      ),
+      asaClassification: ASAClassification.values.firstWhere(
+        (e) => e.toString() == 'ASAClassification.${json['asaClassification']}',
+      ),
+      riskLevel: RiskLevel.values.firstWhere(
+        (e) => e.toString() == 'RiskLevel.${json['riskLevel']}',
+      ),
+      evaluationStatus: EvaluationStatus.values.firstWhere(
+        (e) => e.toString() == 'EvaluationStatus.${json['evaluationStatus']}',
+      ),
+      evaluationDate: json['evaluationDate'] != null 
+          ? DateTime.parse(json['evaluationDate'] as String) 
           : null,
-      airwayAssessment: json['airwayAssessment'] as String?,
-      physicalExamNotes: json['physicalExamNotes'] as String?,
-      asaClass: json['asaClass'] != null 
-          ? AsaClass.values.firstWhere(
-              (e) => e.toString() == 'AsaClass.${json['asaClass']}',
-            )
-          : null,
-      asaNotes: json['asaNotes'] as String?,
-      labResultsUrl: json['labResultsUrl'] as String?,
-      additionalExamsUrl: json['additionalExamsUrl'] as String?,
-      finalOpinion: json['finalOpinion'] as String?,
-      restrictions: json['restrictions'] as String?,
-      recommendations: json['recommendations'] as String?,
+      nextEvaluationDate: DateTime.parse(json['nextEvaluationDate'] as String),
       createdAt: DateTime.parse(json['createdAt'] as String),
-      lastUpdated: json['lastUpdated'] != null 
-          ? DateTime.parse(json['lastUpdated'] as String) 
+      updatedAt: json['updatedAt'] != null 
+          ? DateTime.parse(json['updatedAt'] as String) 
           : null,
-      createdBy: json['createdBy'] as String,
-      clinicId: json['clinicId'] as String?,
+      weight: json['weight'] as String?,
+      height: json['height'] as String?,
+      bmi: json['bmi'] as String?,
+      bloodType: json['bloodType'] as String?,
+      allergies: json['allergies'] as String?,
+      currentMedications: json['currentMedications'] as String?,
+      medicalHistory: json['medicalHistory'] as String?,
+      surgicalHistory: json['surgicalHistory'] as String?,
+      familyHistory: json['familyHistory'] as String?,
+      socialHistory: json['socialHistory'] as String?,
+      physicalExam: json['physicalExam'] as String?,
+      labResults: json['labResults'] as String?,
+      ecgResults: json['ecgResults'] as String?,
+      chestXrayResults: json['chestXrayResults'] as String?,
+      additionalExams: json['additionalExams'] as String?,
+      anesthesiologistNotes: json['anesthesiologistNotes'] as String?,
+      recommendations: json['recommendations'] as String?,
+      fastingStatus: json['fastingStatus'] as bool?,
+      lastMealTime: json['lastMealTime'] != null 
+          ? DateTime.parse(json['lastMealTime'] as String) 
+          : null,
+      specialInstructions: json['specialInstructions'] as String?,
     );
   }
 
@@ -172,148 +193,141 @@ class PatientModel {
       'id': id,
       'name': name,
       'cpf': cpf,
+      'rg': rg,
       'birthDate': birthDate.toIso8601String(),
-      'gender': gender,
-      'weight': weight,
-      'height': height,
+      'gender': gender.toString().split('.').last,
       'phone': phone,
       'email': email,
       'address': address,
+      'city': city,
+      'state': state,
       'emergencyContact': emergencyContact,
       'emergencyPhone': emergencyPhone,
-      'diseases': diseases,
-      'allergies': allergies,
-      'medications': medications,
-      'hasApnea': hasApnea,
-      'apneaDetails': apneaDetails,
-      'isSmoker': isSmoker,
-      'isAlcoholic': isAlcoholic,
-      'previousSurgeries': previousSurgeries,
-      'familyHistory': familyHistory,
-      'bmi': bmi,
-      'heartRate': heartRate,
-      'bloodPressure': bloodPressure,
-      'oxygenSaturation': oxygenSaturation,
-      'mallampati': mallampati?.toString().split('.').last,
-      'airwayAssessment': airwayAssessment,
-      'physicalExamNotes': physicalExamNotes,
-      'asaClass': asaClass?.toString().split('.').last,
-      'asaNotes': asaNotes,
-      'labResultsUrl': labResultsUrl,
-      'additionalExamsUrl': additionalExamsUrl,
-      'finalOpinion': finalOpinion,
-      'restrictions': restrictions,
-      'recommendations': recommendations,
+      'emergencyRelationship': emergencyRelationship,
+      'status': status.toString().split('.').last,
+      'asaClassification': asaClassification.toString().split('.').last,
+      'riskLevel': riskLevel.toString().split('.').last,
+      'evaluationStatus': evaluationStatus.toString().split('.').last,
+      'evaluationDate': evaluationDate?.toIso8601String(),
+      'nextEvaluationDate': nextEvaluationDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
-      'lastUpdated': lastUpdated?.toIso8601String(),
-      'createdBy': createdBy,
-      'clinicId': clinicId,
+      'updatedAt': updatedAt?.toIso8601String(),
+      'weight': weight,
+      'height': height,
+      'bmi': bmi,
+      'bloodType': bloodType,
+      'allergies': allergies,
+      'currentMedications': currentMedications,
+      'medicalHistory': medicalHistory,
+      'surgicalHistory': surgicalHistory,
+      'familyHistory': familyHistory,
+      'socialHistory': socialHistory,
+      'physicalExam': physicalExam,
+      'labResults': labResults,
+      'ecgResults': ecgResults,
+      'chestXrayResults': chestXrayResults,
+      'additionalExams': additionalExams,
+      'anesthesiologistNotes': anesthesiologistNotes,
+      'recommendations': recommendations,
+      'fastingStatus': fastingStatus,
+      'lastMealTime': lastMealTime?.toIso8601String(),
+      'specialInstructions': specialInstructions,
     };
-  }
-
-  int get age {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month || 
-        (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return age;
-  }
-
-  double get bmiCalculated {
-    if (height <= 0) return 0;
-    final heightInMeters = height / 100;
-    return weight / (heightInMeters * heightInMeters);
   }
 
   PatientModel copyWith({
     String? id,
     String? name,
     String? cpf,
+    String? rg,
     DateTime? birthDate,
-    String? gender,
-    double? weight,
-    double? height,
+    Gender? gender,
     String? phone,
     String? email,
     String? address,
+    String? city,
+    String? state,
     String? emergencyContact,
     String? emergencyPhone,
-    List<String>? diseases,
-    List<String>? allergies,
-    List<String>? medications,
-    bool? hasApnea,
-    String? apneaDetails,
-    bool? isSmoker,
-    bool? isAlcoholic,
-    String? previousSurgeries,
-    String? familyHistory,
-    double? bmi,
-    int? heartRate,
-    String? bloodPressure,
-    int? oxygenSaturation,
-    MallampatiClass? mallampati,
-    String? airwayAssessment,
-    String? physicalExamNotes,
-    AsaClass? asaClass,
-    String? asaNotes,
-    String? labResultsUrl,
-    String? additionalExamsUrl,
-    String? finalOpinion,
-    String? restrictions,
-    String? recommendations,
+    String? emergencyRelationship,
+    PatientStatus? status,
+    ASAClassification? asaClassification,
+    RiskLevel? riskLevel,
+    EvaluationStatus? evaluationStatus,
+    DateTime? evaluationDate,
+    DateTime? nextEvaluationDate,
     DateTime? createdAt,
-    DateTime? lastUpdated,
-    String? createdBy,
-    String? clinicId,
+    DateTime? updatedAt,
+    String? weight,
+    String? height,
+    String? bmi,
+    String? bloodType,
+    String? allergies,
+    String? currentMedications,
+    String? medicalHistory,
+    String? surgicalHistory,
+    String? familyHistory,
+    String? socialHistory,
+    String? physicalExam,
+    String? labResults,
+    String? ecgResults,
+    String? chestXrayResults,
+    String? additionalExams,
+    String? anesthesiologistNotes,
+    String? recommendations,
+    bool? fastingStatus,
+    DateTime? lastMealTime,
+    String? specialInstructions,
   }) {
     return PatientModel(
       id: id ?? this.id,
       name: name ?? this.name,
       cpf: cpf ?? this.cpf,
+      rg: rg ?? this.rg,
       birthDate: birthDate ?? this.birthDate,
       gender: gender ?? this.gender,
-      weight: weight ?? this.weight,
-      height: height ?? this.height,
       phone: phone ?? this.phone,
       email: email ?? this.email,
       address: address ?? this.address,
+      city: city ?? this.city,
+      state: state ?? this.state,
       emergencyContact: emergencyContact ?? this.emergencyContact,
       emergencyPhone: emergencyPhone ?? this.emergencyPhone,
-      diseases: diseases ?? this.diseases,
-      allergies: allergies ?? this.allergies,
-      medications: medications ?? this.medications,
-      hasApnea: hasApnea ?? this.hasApnea,
-      apneaDetails: apneaDetails ?? this.apneaDetails,
-      isSmoker: isSmoker ?? this.isSmoker,
-      isAlcoholic: isAlcoholic ?? this.isAlcoholic,
-      previousSurgeries: previousSurgeries ?? this.previousSurgeries,
-      familyHistory: familyHistory ?? this.familyHistory,
-      bmi: bmi ?? this.bmi,
-      heartRate: heartRate ?? this.heartRate,
-      bloodPressure: bloodPressure ?? this.bloodPressure,
-      oxygenSaturation: oxygenSaturation ?? this.oxygenSaturation,
-      mallampati: mallampati ?? this.mallampati,
-      airwayAssessment: airwayAssessment ?? this.airwayAssessment,
-      physicalExamNotes: physicalExamNotes ?? this.physicalExamNotes,
-      asaClass: asaClass ?? this.asaClass,
-      asaNotes: asaNotes ?? this.asaNotes,
-      labResultsUrl: labResultsUrl ?? this.labResultsUrl,
-      additionalExamsUrl: additionalExamsUrl ?? this.additionalExamsUrl,
-      finalOpinion: finalOpinion ?? this.finalOpinion,
-      restrictions: restrictions ?? this.restrictions,
-      recommendations: recommendations ?? this.recommendations,
+      emergencyRelationship: emergencyRelationship ?? this.emergencyRelationship,
+      status: status ?? this.status,
+      asaClassification: asaClassification ?? this.asaClassification,
+      riskLevel: riskLevel ?? this.riskLevel,
+      evaluationStatus: evaluationStatus ?? this.evaluationStatus,
+      evaluationDate: evaluationDate ?? this.evaluationDate,
+      nextEvaluationDate: nextEvaluationDate ?? this.nextEvaluationDate,
       createdAt: createdAt ?? this.createdAt,
-      lastUpdated: lastUpdated ?? this.lastUpdated,
-      createdBy: createdBy ?? this.createdBy,
-      clinicId: clinicId ?? this.clinicId,
+      updatedAt: updatedAt ?? this.updatedAt,
+      weight: weight ?? this.weight,
+      height: height ?? this.height,
+      bmi: bmi ?? this.bmi,
+      bloodType: bloodType ?? this.bloodType,
+      allergies: allergies ?? this.allergies,
+      currentMedications: currentMedications ?? this.currentMedications,
+      medicalHistory: medicalHistory ?? this.medicalHistory,
+      surgicalHistory: surgicalHistory ?? this.surgicalHistory,
+      familyHistory: familyHistory ?? this.familyHistory,
+      socialHistory: socialHistory ?? this.socialHistory,
+      physicalExam: physicalExam ?? this.physicalExam,
+      labResults: labResults ?? this.labResults,
+      ecgResults: ecgResults ?? this.ecgResults,
+      chestXrayResults: chestXrayResults ?? this.chestXrayResults,
+      additionalExams: additionalExams ?? this.additionalExams,
+      anesthesiologistNotes: anesthesiologistNotes ?? this.anesthesiologistNotes,
+      recommendations: recommendations ?? this.recommendations,
+      fastingStatus: fastingStatus ?? this.fastingStatus,
+      lastMealTime: lastMealTime ?? this.lastMealTime,
+      specialInstructions: specialInstructions ?? this.specialInstructions,
     );
   }
 
   @override
   String toString() {
-    return 'PatientModel(id: $id, name: $name, cpf: $cpf, age: $age)';
+    return 'PatientModel(id: $id, name: $name, cpf: $cpf, status: $status)';
   }
 
   @override

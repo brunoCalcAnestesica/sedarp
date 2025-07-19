@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../shared/models/user_model.dart';
 import '../../clinics/screens/clinic_management_screen.dart';
+import '../../patients/screens/patient_list_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final UserRole userRole;
@@ -552,7 +553,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           {
             'icon': Icons.person_add,
             'label': 'Cadastrar Paciente',
-            'onTap': () => _showMessage('Cadastrar paciente'),
+            'onTap': () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PatientListScreen(),
+                ),
+              );
+            },
           },
           {
             'icon': Icons.medication,
