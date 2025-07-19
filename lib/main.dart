@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_constants.dart';
 import 'core/constants/app_theme.dart';
+import 'features/auth/screens/login_screen.dart';
+import 'shared/models/user_model.dart';
 
 void main() {
   runApp(
@@ -186,11 +188,25 @@ class WelcomeScreen extends StatelessWidget {
   }
 
   void _navigateToLogin(BuildContext context, String profile) {
-    // TODO: Implementar navegação para tela de login específica
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Login para $profile será implementado em breve!'),
-        backgroundColor: AppConstants.infoColor,
+    UserRole userRole;
+    
+    switch (profile) {
+      case 'clinic':
+        userRole = UserRole.clinic;
+        break;
+      case 'anesthesiologist':
+        userRole = UserRole.anesthesiologist;
+        break;
+      case 'administrator':
+        userRole = UserRole.administrator;
+        break;
+      default:
+        userRole = UserRole.clinic;
+    }
+    
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(userRole: userRole),
       ),
     );
   }
